@@ -1,0 +1,54 @@
+{
+  "name": "staticpod-csms-ts-server",
+  "version": "1.0.0",
+  "description": "A test simulator backend API that simulates testing against a CSMS server",
+  "main": "src/index.ts",
+  "engines": {
+    "node": "17.6.0"
+  },
+  "bin": {
+    "ts-server": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest --config=jest.config.unit.js",
+    "check": "npx npm-check-updates",
+    "upgrade": "npx npm-check-updates && npm install",
+    "coverage": "env JEST_JUNIT_OUTPUT_NAME=junit-unit.xml namespace=${NWS} jest unit --coverage --testTimeout 60000 --testEnvironment=node --reporters=default --reporters=jest-junit",
+    "it": "env JEST_JUNIT_OUTPUT_NAME=junit-it.xml namespace=${CSMS} jest integration --testTimeout 60000 -i --testEnvironment=node --reporters=default --reporters=jest-junit",
+    "lint": "eslint common/* src/ lib/ test/",
+    "lintfix": "eslint --fix common/ src/ lib/ test/",
+    "copyright": "copyright-header --fix --copyrightHolder 'staticpod LLC or its affiliates. All rights reserved.' "
+  },
+  "author": "ratheesh.nair",
+  "license": "ISC",
+  "keywords": [
+    "Simulator",
+    "EV",
+    "Test",
+    "CSMS"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.17.8",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-typescript": "^7.16.7",
+    "babel-jest": "^27.5.1",
+    "copyright-header": "^0.4.6",
+    "eslint": "^8.12.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.5.1",
+    "jest-dynalite": "^3.4.4",
+    "jest-junit": "^13.0.0",
+    "prettier": "^2.6.2",
+    "semantic-release": "^19.0.2",
+    "ts-jest": "^27.1.4",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "ws": "^8.5.0"
+  }
+}
