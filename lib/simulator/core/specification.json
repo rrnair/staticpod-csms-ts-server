@@ -1,0 +1,27 @@
+{
+  "id": "Core",
+  "order": 1,
+  "name": "CoreSpecSuite",
+  "title": "CSMS Core Specs",
+  "enabled": true,
+  "description": "Spec to test bootstraping a charging station and its various outcomes",
+  "files": ["lib/simulator/core/boot-notification-feature.ts"],
+  "features": [
+    {
+      "id": "B01",
+      "name": "ColdBootNotification",
+      "title": "Cold Boot Charging Station",
+      "functionalBlock": "Provisioning",
+      "objective": "The objective of this use case is to enable a Charging Station that is powering up to register itself at a CSMS and provide the right state information.",
+      "description": "This use case describes how the CSMS can control which Charging Stations access it. To be able to control Charging Stations connecting to a CSMS, Charging Stations are required to send BootNotificationRequest. This request contains some general information about the Charging Station"
+    },
+    {
+      "id": "B02",
+      "name": "ColdBootNotificationPending",
+      "title": "Cold Boot Charging Station - Pending",
+      "functionalBlock": "Provisioning",
+      "objective": "This use case describes the behavior of the CSMS and a Charging Station when the Charging Station is informed by the CSMS that it is not yet accepted using the Pending status.",
+      "description": "This use case describes the behavior of the CSMS and a Charging Station when the Charging Station is informed by the CSMS that it is not yet accepted using the Pending status."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "Authorization",
+  "order": 2,
+  "name": "AuthorizationSpecSuite",
+  "title": "CSMS Authorization Specs",
+  "description": "Spec to test various Authorization use-cases such RFID, start button, mobile etc and its various outcomes",
+  "enabled": true,
+  "files": ["lib/simulator/authorization/authorization-feature.ts"],
+  "features": [
+    {
+      "id": "C01",
+      "name": "AuthorizationUsingRFID",
+      "title": "EV Driver Authorizes using RFID",
+      "functionalBlock": "Authorization",
+      "objective": "To enable the Charging Station to request the CSMS to authorize an EV Driver to start or stop charging",
+      "description": "When a Charging Station needs to charge an EV, it needs to authorize the EV Driver first before the charging can be started or stopped"
+    },
+    {
+      "id": "C02",
+      "name": "AuthorizationUsingStartButton",
+      "title": "Authorozation using a start button",
+      "functionalBlock": "Authorization",
+      "objective": "Make it possible for a Charging Station that has a start button to start charging",
+      "description": "For some chargers authorization of a user might not be a requirement. A simple charger might have a button instead of a more expensive RFID reader to start charging. When such a Charging Station start charging, it is not needed to send an AuthorizeRequest. In the TransactionEventRequest (eventType = Started), IdTokenType information needs to be given, which the CSMS then cannot reject."
+    }
+  ]
+}
