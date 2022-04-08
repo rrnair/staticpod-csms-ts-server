@@ -1,14 +1,19 @@
-import { logger, Specification } from './types';
+import { logger, RunnerInstance, Specification } from './types';
 import { Utils } from './utils';
-import Mocha from 'mocha';
+import Mocha, { Runner } from 'mocha';
+import crypto from 'crypto';
+import { NotFoundException } from './exception/not-found-exception';
 
 export class SpecificationService {
     
 
     private _specifications: Specification[] = [];
 
-    private _mochaOptions?:Mocha.MochaOptions = {
-    };
+    private _mochaOptions?:Mocha.MochaOptions = {};
+
+    private _activeRunners: Map<string, Runner> = new Map();
+
+    private _activeRunnerInstances: Map<string, RunnerInstance> = new Map();
     
     constructor(path: string, mochaOptions?: {}) {
         this._init(path);
@@ -32,7 +37,17 @@ export class SpecificationService {
         return this._specifications;
     }
 
-    public run() {
+    public getRunnerInstance(id: string): RunnerInstance {
+        let runnerInstance = this._activeRunnerInstances.get(id);
+        
+        if (runnerInstance) {
+            return runnerInstance;
+        }
+
+        throw new NotFoundException(`Unable to find instance with id ${id}`);
+    }
+
+    public run(): RunnerInstance {
 
         logger.info(`Specifications ${this._specifications}`);
 
@@ -54,8 +69,20 @@ export class SpecificationService {
             }
         });
 
+        const runnerInstance:RunnerInstance = {
+            id: crypto.randomUUID(),
+            intiatedOn: new Date(),
+            pollIntervalInSecs: 20,
+            completed: false
+        };
+        this._activeRunnerInstances.set(runnerInstance.id, runnerInstance);
+        this._activeRunners.set(runnerInstance.id, runner);
+
         runner.on('end', () => {
+            runnerInstance.completed = true;
             console.log(`Spec finished executing...`);
         });
+
+        return runnerInstance;
     }
 }

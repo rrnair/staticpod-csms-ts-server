@@ -5,7 +5,7 @@
   "title": "CSMS Core Specs",
   "enabled": true,
   "description": "Spec to test bootstraping a charging station and its various outcomes",
-  "files": ["lib/simulator/core/boot-notification-feature.ts"],
+  "files": ["lib/simulator/core/boot-notification-specification.ts"],
   "features": [
     {
       "id": "B01",

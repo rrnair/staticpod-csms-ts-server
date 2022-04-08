@@ -3,14 +3,14 @@ import moment from 'moment-timezone';
 import { SpecificationService } from './simulator/specification-service';
 import { Utils } from './simulator/utils';
 import path from 'path';
+import { logger } from './simulator/types';
+import { routes } from './simulator/routes';
 
 const PORT: number = 8080;
 
 // Create Express Application, we add routes and middleware to this application to handle request/response
 const app = express();
 
-// Router encapsulates all the http routes exposed in the application
-let router = express.Router();
 
 // Validate specification file 
 Utils.isValidSpecification(__dirname, Utils.SPEC_SCHEMA_FILE);
@@ -32,23 +32,9 @@ const mochaOptions: Mocha.MochaOptions = {
 // Initialize Service
 const specificationService = new SpecificationService(__dirname, mochaOptions);
 
-// Add routes we want to expose
-router.get('/', (request: express.Request, response: express.Response) => {
-    console.log(`You have reached default base route of the application at : ${request.baseUrl}`);
-    let specifications = specificationService.getSpecifications();
-    response.status(200).json(specifications).send();
-});
-
-router.get('/specs/run', (request: express.Request, response: express.Response) => {
-    console.log(`Starting tests...${request.path}`);
-    specificationService.run();
-    response.status(200).json({message: 'Successfully initiated tests'});
-});
-
-// Set application to use Router
-app.use(router);
-
+// Setup rotues, a Router encapsulates all the http routes exposed in the application
+app.use(routes(specificationService));
 
 app.listen(PORT, () => {
-    console.log(`Test Simulator started listeing on Port: ${PORT}, Time: ${new Date()}`);
+    logger.info(`Test Simulator started listeing on Port: ${PORT}, Time: ${new Date()}`);
 });

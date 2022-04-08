@@ -1,3 +1,4 @@
+import { Runner } from "mocha";
 import winston from "winston";
 
 export interface Specification {
@@ -33,8 +34,19 @@ export interface Feature {
 
     objective?: string
 
-    functionalBlock: string,
+    functionalBlock: string
 
+}
+
+export interface RunnerInstance {
+
+    id: string,
+
+    intiatedOn: Date,
+
+    pollIntervalInSecs: number,
+
+    completed: boolean
 }
 
 export const logger = winston.createLogger({

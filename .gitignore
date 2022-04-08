@@ -8,6 +8,7 @@ lerna-debug.log*
 
 package-lock.json 
 
+execution-report
 
 dist
 
