@@ -5,7 +5,7 @@
   "title": "CSMS Authorization Specs",
   "description": "Spec to test various Authorization use-cases such RFID, start button, mobile etc and its various outcomes",
   "enabled": true,
-  "files": ["lib/simulator/authorization/authorization-feature.ts"],
+  "files": ["lib/simulator/v201/authorization/authorization-feature.ts"],
   "features": [
     {
       "id": "C01",

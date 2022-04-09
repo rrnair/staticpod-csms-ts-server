@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { SpecificationService } from "../lib/simulator/specification-service";
+import { SpecificationService } from "../lib/simulator/v201/specification-service";
 
 
 describe('Specification feature specs', () => {

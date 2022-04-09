@@ -2,7 +2,7 @@
   "name": "staticpod-csms-ts-server",
   "version": "1.0.0",
   "description": "A test simulator backend API that simulates testing against a CSMS server",
-  "main": "src/index.ts",
+  "main": "lib/index.ts",
   "engines": {
     "node": "17.6.0"
   },
@@ -14,14 +14,14 @@
     "serve": "ts-node-dev --respawn --transpile-only lib/index.ts",
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "test": "mocha -r ts-node/register test/**/*.spec.ts",
     "check": "npx npm-check-updates",
     "upgrade": "npx npm-check-updates && npm install",
     "coverage": "env JEST_JUNIT_OUTPUT_NAME=junit-unit.xml namespace=${NWS} jest unit --coverage --testTimeout 60000 --testEnvironment=node --reporters=default --reporters=jest-junit",
     "it": "env JEST_JUNIT_OUTPUT_NAME=junit-it.xml namespace=${CSMS} jest integration --testTimeout 60000 -i --testEnvironment=node --reporters=default --reporters=jest-junit",
     "lint": "eslint common/* src/ lib/ test/",
     "lintfix": "eslint --fix common/ src/ lib/ test/",
-    "copyright": "copyright-header --fix --copyrightHolder 'staticpod LLC or its affiliates. All rights reserved.' "
+    "copyright": "copyright-header --fix --include \"lib\" --copyrightHolder 'staticpod LLC or its affiliates. All rights reserved.' "
   },
   "author": "ratheesh.nair",
   "license": "ISC",

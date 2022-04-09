@@ -1,3 +1,7 @@
+/**
+ * Specification tests all the OCPP Core module features (use-cases). Set the Id from the OCPP Specification v2.0.1 specification
+ * document. Follow this convention to easily identify which feature broke
+ */
 
 describe('Boot Notification Specifications', () => {
     it('B01 - Chargign station is powering up to register to CSMS', () => {
