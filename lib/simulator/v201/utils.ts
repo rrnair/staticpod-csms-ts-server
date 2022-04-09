@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 staticpod LLC or its affiliates. All rights reserved. @author: ratheesh.nair */
+
 import { logger, Specification } from "./types";
 import fs from 'fs';
 import Ajv, { SchemaObject } from "ajv";

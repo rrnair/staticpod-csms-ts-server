@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 staticpod LLC or its affiliates. All rights reserved. @author: ratheesh.nair */
+
 import winston from "winston";
 
 /**
@@ -65,7 +67,7 @@ export interface Feature {
 export interface RunnerInstance {
 
     // Unique id of the mocha run 
-    id: string,
+    _id: string,
 
     // When the specification test was initiated
     intiatedOn: Date,
@@ -74,7 +76,20 @@ export interface RunnerInstance {
     pollIntervalInSecs: number,
 
     // Is the run complete?
-    completed: boolean
+    completed: boolean,
+
+    // Feature test report directory
+    reportDirectory: string,
+
+    status: RunnerStatus
+}
+
+export enum RunnerStatus {
+    Initiated,
+
+    CompletedSuccessfully,
+
+    CompletedWithfailures,
 }
 
 /**

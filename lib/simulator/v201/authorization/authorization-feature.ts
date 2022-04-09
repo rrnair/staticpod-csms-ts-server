@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 staticpod LLC or its affiliates. All rights reserved. @author: ratheesh.nair */
+
 /**
  * Feature tests for Authorization module. Use the Id as mentioned in the use-case of OCPP v2.0.1 specification.
  * 

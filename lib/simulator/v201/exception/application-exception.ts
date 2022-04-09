@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 staticpod LLC or its affiliates. All rights reserved. @author: ratheesh.nair */
+
 
 /**
  * Custom application error thats minimzed to show in the UI. Extend this abstract class for all custom errors

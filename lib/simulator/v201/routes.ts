@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 staticpod LLC or its affiliates. All rights reserved. @author: ratheesh.nair */
+
 import express, {Router} from "express";
 import { ApplicationException } from "./exception/application-exception";
 import { SpecificationService } from "./specification-service";

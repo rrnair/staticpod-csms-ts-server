@@ -1,9 +1,11 @@
-import { logger, RunnerInstance, Specification } from './types';
+/* Copyright (c) 2022 staticpod LLC or its affiliates. All rights reserved. @author: ratheesh.nair */
+
+import { logger, RunnerInstance, RunnerStatus, Specification } from './types';
 import { Utils } from './utils';
 import Mocha, { Runner } from 'mocha';
 import crypto from 'crypto';
 import { NotFoundException } from './exception/not-found-exception';
-
+import loki from 'lokijs';
 /**
  * Service instance for validating, running features
  */
@@ -21,6 +23,8 @@ export class SpecificationService {
 
     // Cache of all runner instances, these are serialized as response to UI
     private _activeRunnerInstances: Map<string, RunnerInstance> = new Map();
+
+    private _runnerCollection: loki.Collection<RunnerInstance>;
     
     /**
      * Construct service instance
@@ -28,9 +32,10 @@ export class SpecificationService {
      * @param path Base directory where specifications are available
      * @param mochaOptions Mocha configuration options
      */
-    constructor(path: string, mochaOptions?: {}) {
+    constructor(path: string, runnerDb: loki.Collection<RunnerInstance>, mochaOptions?: {}) {
         this._init(path);
         this._mochaOptions = mochaOptions;
+        this._runnerCollection = runnerDb;
     }
 
 
@@ -71,15 +76,36 @@ export class SpecificationService {
      */
     public getRunnerInstance(id: string): RunnerInstance {
     
-        let runnerInstance = this._activeRunnerInstances.get(id);
+        let runnerInstance = null;//this._activeRunnerInstances.get(id);
+        let doc: RunnerInstance | null;
         
         // Do we have a runner instance for the specified id    
         if (runnerInstance) {
-            return runnerInstance;
+            logger.info(`Returning cached instance of runner instance with id ${id}`);
+            doc = runnerInstance;
+        } else {
+            console.log(`Find all ${this._runnerCollection.find({'_id': id})}`);
+            // Find from database and cache it.
+            doc = this._runnerCollection.findOne({'_id': id});
+            console.log(`from db ${JSON.stringify(doc)}`);
+            if (doc) {
+                
+                logger.info('Found runner instance from datastore, caching it');
+                // Cache it
+                this._activeRunnerInstances.set(doc._id, doc);
+
+            } else {
+                logger.error(`Runner instance with id ${id} not found in datastore`);
+            }
         }
 
-        // We dont know which runner instance is asked, throw an error
-        throw new NotFoundException(`Unable to find instance with id ${id}`);
+        console.log(`Outside : ${JSON.stringify(doc)}`);
+        if (doc) {
+            return doc;
+        } else {
+            // We dont know which runner instance is asked, throw an error
+            throw new NotFoundException(`Unable to find instance with id ${id}`);
+        }
     }
 
     /**
@@ -90,7 +116,7 @@ export class SpecificationService {
      */
     public run(): RunnerInstance {
 
-        logger.info(`Specifications ${this._specifications}`);
+        logger.info(`Running specifications and features...`);
 
         // Construct Mocha instance
         let mocha = new Mocha(this._mochaOptions);
@@ -119,25 +145,40 @@ export class SpecificationService {
 
         // Create a runner instance with run details
         const runnerInstance:RunnerInstance = {
-            id: crypto.randomUUID(),
+            _id: crypto.randomUUID({disableEntropyCache: true}),
             intiatedOn: new Date(),
             pollIntervalInSecs: 20,
-            completed: false
+            completed: false,
+            reportDirectory: this._mochaOptions?.reporterOptions?.reportDirectory,
+            status: RunnerStatus.Initiated
         };
 
+        // Add runner instance details to database
+        this._runnerCollection.insert(runnerInstance);
+
         // Cache the runner instance and mocha Runner instance
-        this._activeRunnerInstances.set(runnerInstance.id, runnerInstance);
-        this._activeRunners.set(runnerInstance.id, runner);
+        this._activeRunnerInstances.set(runnerInstance._id, runnerInstance);
+        this._activeRunners.set(runnerInstance._id, runner);
 
         // Is the run completed?
-        runner.on('end', () => {
+        runner.once(Mocha.Runner.constants.EVENT_RUN_END, () => {
             // Mark the runner instance as completed
             runnerInstance.completed = true;
+            if (runner.stats && runner.stats?.failures > 0) {
+                runnerInstance.status = RunnerStatus.CompletedWithfailures;
+            } else {
+                runnerInstance.status = RunnerStatus.CompletedSuccessfully;
+            }
 
-            console.log(`Spec finished executing...`);
+            // Update status in database
+            this._runnerCollection.update(runnerInstance);
+
+            logger.info(`Specs with id ${runnerInstance._id} finished executing...${JSON.stringify(runner.stats)}`);
         });
 
         // Return the runner details for UI to refer back
         return runnerInstance;
     }
+
+    
 }

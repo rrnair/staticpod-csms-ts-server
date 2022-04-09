@@ -1,12 +1,23 @@
+/* Copyright (c) 2022 staticpod LLC or its affiliates. All rights reserved. @author: ratheesh.nair */
+
 import express, { Router } from 'express';
 import moment from 'moment-timezone';
 import { SpecificationService } from './specification-service';
 import { Utils } from './utils';
 import path from 'path';
-import { logger } from './types';
+import { logger, RunnerInstance } from './types';
 import { routesv201 } from './routes';
+import loki from 'lokijs';
 
 export const apiv201 = () => {
+
+    const runnerInstanceDb = path.resolve(__dirname, `../../../db/v201/runnerInstances.db`);
+
+    // Instantiate database.
+    const lokidb = new loki('runnerInstances.db', {autoload: true, autosave: true, persistenceMethod: 'fs', verbose: true});
+    const runnerCollection = lokidb.addCollection<RunnerInstance>('runnerInstances', {indices: ['_id']});
+    
+    
     const currentDateTime = moment().utcOffset('+05:30').format('YYYY/MM/DD/HH:mm:ss');
     const reportDirectory = path.resolve(__dirname, `../../../execution-report/${currentDateTime}`);
 
@@ -33,7 +44,7 @@ export const apiv201 = () => {
     };
 
     // Initialize Service
-    const specificationService = new SpecificationService(__dirname, mochaOptions);
+    const specificationService = new SpecificationService(__dirname, runnerCollection, mochaOptions);
 
     // Setup rotues, a Router encapsulates all the http routes exposed in the application
     const router: Router = routesv201(specificationService);
